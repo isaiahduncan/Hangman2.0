@@ -1,7 +1,14 @@
-//import java.io.IOException;
-//import java.util.concurrent.Executors;
+import java.util.concurrent.Executors;
 import java.util.Scanner;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpRequest;
 
 /**
  * 
@@ -112,9 +119,50 @@ public class Hangman {
 		return hidden;
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String [] wordsAndPhrases = {"I love Computer Science!", "Isaiah is awesome!", "Google", "Amazon", "Japan is Beautiful!", "Air bnb", "New York", "Los Angelas", "Isaiah will live joyfully in Tokyo soon"};
+	public static String apiRequest() throws IOException {
+		/*HttpRequest.Builder reqBuilder = HttpRequest.newBuilder().uri(URI.create(
+				"https://api.twitter.com/1.1/search/tweets.json?q=naruto+anime+%22demon+slayer%22&count=10"));
+		reqBuilder.header("Authorization","Bearer"
+				+ "AAAAAAAAAAAAAAAAAAAAAJ%2Fh%2FgAAAAAAHdovpNOGFkwW%2FP6laz0bPmPFNPA%3D17U4WpGQSbSIORrBGCYuA1EiZPEYUiPzD18lx1FoUb4XZlnTI6");
+
+		reqBuilder.method("GET", null);*/
+		
+		
+		URL url = new URL("https://api.twitter.com/1.1/search/tweets.json?q=naruto+anime+%22demon+slayer%22&count=10");
+		String readLine = null;
+		
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("GET");
+		
+		connection.setRequestProperty("Authorization", "Bearer "
+				+ "AAAAAAAAAAAAAAAAAAAAAJ%2Fh%2FgAAAAAAHdovpNOGFkwW%2FP6laz0bPmPFNPA%3D17U4WpGQSbSIORrBGCYuA1EiZPEYUiPzD18lx1FoUb4XZlnTI6");
+		
+		//connection.setRequestProperty("userId", "a1bcdef");
+
+		int responseCode = connection.getResponseCode();
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	        BufferedReader in = new BufferedReader(
+	            new InputStreamReader(connection.getInputStream()));
+	        StringBuffer response = new StringBuffer();
+	        while ((readLine = in .readLine()) != null) {
+	            response.append(readLine);
+	        } in .close();
+	        // print result
+	        
+	        
+	        System.out.println("JSON String Result " + response.toString());
+	        //GetAndPost.POSTRequest(response.toString());
+	    } else {
+	        System.out.println("GET NOT WORKED");
+	    }
+		
+		return null;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		apiRequest();
+		
+		/*String [] wordsAndPhrases = {"I love Computer Science!", "Isaiah is awesome!", "Microsoft", "Google", "Amazon", "Japan is Beautiful!", "Air bnb", "New York", "Los Angelas", "Isaiah will live joyfully in Tokyo soon"};
 		
 		String word = wordsAndPhrases[(int) (Math.random()*wordsAndPhrases.length)];
 		System.out.println("Welcome to Hangman!");
@@ -155,7 +203,7 @@ public class Hangman {
 			System.out.println("You ran out of guesses. Better luck next time!");
 		}
 		
-		System.out.println("The hidden word was \""+word+"\"");		
+		System.out.println("The hidden word was \""+word+"\"");		*/
 	}
 
 }
