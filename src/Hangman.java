@@ -119,13 +119,13 @@ public class Hangman {
 		return hidden;
 	}
 	
-	public static String apiRequest() throws IOException {
+	/*public static String apiRequest() throws IOException {
 		/*HttpRequest.Builder reqBuilder = HttpRequest.newBuilder().uri(URI.create(
 				"https://api.twitter.com/1.1/search/tweets.json?q=naruto+anime+%22demon+slayer%22&count=10"));
 		reqBuilder.header("Authorization","Bearer"
 				+ "AAAAAAAAAAAAAAAAAAAAAJ%2Fh%2FgAAAAAAHdovpNOGFkwW%2FP6laz0bPmPFNPA%3D17U4WpGQSbSIORrBGCYuA1EiZPEYUiPzD18lx1FoUb4XZlnTI6");
 
-		reqBuilder.method("GET", null);*/
+		reqBuilder.method("GET", null);*//*
 		
 		
 		URL url = new URL("https://api.twitter.com/1.1/search/tweets.json?q=naruto+anime+%22demon+slayer%22&count=10");
@@ -157,10 +157,10 @@ public class Hangman {
 	    }
 		
 		return null;
-	}
+	}*/
 	
 	public static void main(String[] args) throws IOException {
-		apiRequest();
+		APIRequest.apiRequest();
 		
 		/*String [] wordsAndPhrases = {"I love Computer Science!", "Isaiah is awesome!", "Microsoft", "Google", "Amazon", "Japan is Beautiful!", "Air bnb", "New York", "Los Angelas", "Isaiah will live joyfully in Tokyo soon"};
 		
