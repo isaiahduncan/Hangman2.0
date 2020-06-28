@@ -11,7 +11,7 @@ import org.json.simple.parser.JSONParser;
 
 public class APIRequest {
 	public static String qFilter(int filter) {
-		switch (filter) {
+		switch (filter) { 
 			case 1: //anime
 				return "q=naruto+OR+anime+OR+%22demon+slayer%22+OR+%22Rising+of+the+Shield+Hero%22";
 			case 2: //hip hop
@@ -25,22 +25,19 @@ public class APIRequest {
 		}
 	}
 
-	public static String apiRequest() throws IOException {
-		/*HttpRequest.Builder reqBuilder = HttpRequest.newBuilder().uri(URI.create(
-				"https://api.twitter.com/1.1/search/tweets.json?q=naruto+anime+%22demon+slayer%22&count=10"));
-		reqBuilder.header("Authorization","Bearer"
-				+ "AAAAAAAAAAAAAAAAAAAAAJ%2Fh%2FgAAAAAAHdovpNOGFkwW%2FP6laz0bPmPFNPA%3D17U4WpGQSbSIORrBGCYuA1EiZPEYUiPzD18lx1FoUb4XZlnTI6");
-
-		reqBuilder.method("GET", null);*/
-		JSONObject jo;
-		String q = qFilter(1);
+	public static String [] apiRequest(int topic) throws IOException {
+		String [] tweetTexts = new String[100];
 		
-		URL url = new URL("https://api.twitter.com/1.1/search/tweets.json?"+q+"&tweet_mode=extended&lang=en");
+		String q = qFilter(topic);
+		
+		//this is setting the url for the api request
+		URL url = new URL("https://api.twitter.com/1.1/search/tweets.json?"+q+"&tweet_mode=extended&lang=en&count=100"); 
 		String readLine = null;
 		
+		//the connection variable is the means of making a request to the api
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("GET");
-		
+		connection.setRequestMethod("GET");//setting request method
+		//the following line sets the bearer token which gives the application access to the twitter api
 		connection.setRequestProperty("Authorization", "Bearer "
 				+ "AAAAAAAAAAAAAAAAAAAAAJ%2Fh%2FgAAAAAAHdovpNOGFkwW%2FP6laz0bPmPFNPA%3D17U4WpGQSbSIORrBGCYuA1EiZPEYUiPzD18lx1FoUb4XZlnTI6");
 		
@@ -53,7 +50,8 @@ public class APIRequest {
 	        StringBuffer response = new StringBuffer();
 	        while ((readLine = in .readLine()) != null) {
 	            response.append(readLine);
-	        } in .close();
+	        }
+	        in .close();
 	        // print result
 	        
 	        JSONParser parser = new JSONParser();
@@ -66,13 +64,17 @@ public class APIRequest {
 	        	
 	        	twitterStatuses = (JSONArray) twitterResponse.get("statuses");	        	
 	        } catch (ParseException e) {
-	        	System.out.println("bad parse");
+	        	System.out.println("bad parsing");
 	        	return null;
 	        }
+	        
+	        
+	        
 
 	        for(int i = 0; i < twitterStatuses.size(); i++) {
 		        JSONObject tweet = (JSONObject) twitterStatuses.get(i);
 		        String tweetText = (String) tweet.get("full_text");
+		        tweetTexts[i] = tweetText;
 		        System.out.println("Tweet Text:\n"+tweetText+"\n\n");
 	        }
 	        
@@ -83,10 +85,14 @@ public class APIRequest {
 	        
 	        //GetAndPost.POSTRequest(response.toString());
 	    } else {
-	        System.out.println("GET NOT WORKED");
+	        System.out.println("GET NOT WORKING");
 	    }
 		
-		return null;
+		return tweetTexts;
+	}
+	
+	public static void main(String [] args) throws IOException {
+		apiRequest(1);
 	}
 	
 }
