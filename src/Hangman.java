@@ -97,9 +97,34 @@ public class Hangman {
 			}
 		}
 		
-		return hidden;
+		return validate(secret, hidden);
 		
 	}
+	
+	public static StringBuffer validate(String secret, StringBuffer hidden) {
+		if(secret.indexOf("RT") == 0 || secret.indexOf("@") == 0) {
+			System.out.println(hidden);
+			System.out.println("my pocket my pockets");
+			hidden.replace(0, secret.indexOf(':'), secret.substring(0, secret.indexOf(':')));
+		}
+		int hti = 0;
+		while((hti = secret.indexOf("https://", hti)) > 0 || (hti = secret.indexOf("#", hti)) > 0) {
+			int endInd;
+			if((endInd = secret.indexOf(' ', hti)) > 0) {
+				hidden.replace(hti, endInd, secret.substring(hti, endInd));
+				hti = endInd;
+			} else if((endInd = secret.indexOf('\n', hti)) > 0) {
+				hidden.replace(hti, endInd, secret.substring(hti, endInd));
+				hti = endInd;
+			} else {
+				System.out.println("seeing if the code reaches here");
+				hidden.replace(hti, hidden.length(), secret.substring(hti,secret.length()));
+				hti = hidden.length();
+			}
+		}
+		
+		return hidden;
+	}// I need to test to see the output
 	
 	public static StringBuffer makeGuess(String word, StringBuffer hidden, Scanner scan) {
 		String guess = scan.nextLine();
@@ -160,40 +185,54 @@ public class Hangman {
 	}*/
 	
 	public static void main(String[] args) throws IOException {
-		APIRequest.apiRequest();
 		
-		/*String [] wordsAndPhrases = {"I love Computer Science!", "Isaiah is awesome!", "Microsoft", "Google", "Amazon", "Japan is Beautiful!", "Air bnb", "New York", "Los Angelas", "Isaiah will live joyfully in Tokyo soon"};
 		
-		String word = wordsAndPhrases[(int) (Math.random()*wordsAndPhrases.length)];
+		Scanner scan = new Scanner(System.in); Scanner intscan = new Scanner(System.in);
+		String [] wordsAndPhrases = {"I love Computer Science!", "Isaiah is awesome!", "Microsoft", "Google", "Amazon", "Japan is Beautiful!", "Air bnb", "New York", "Los Angelas", "Isaiah will live joyfully in Tokyo soon"};
+		int apiInd = 0;
+		String word; 
+		
 		System.out.println("Welcome to Hangman!");
+		System.out.println("Which method of retrieving guessing phrases do you prefer?\n"
+				+ "1 - Phrases from Twitter -- Uses Twiter API to retrieve guessing phrases based off of your topic choice\n"
+				+ "2 - Phrases from a pre-made list");
+		
+		int choice = intscan.nextInt();
+		if(choice == 1) {
+			System.out.println("Which topic would you like your phrase to be about?");
+			int topic = intscan.nextInt();
+			wordsAndPhrases = APIRequest.apiRequest(topic);
+			word = wordsAndPhrases[apiInd++];
+		} else {
+			word = wordsAndPhrases[(int) (Math.random()*wordsAndPhrases.length)];
+		}
 		
 		boolean done = false;
 		StringBuffer hidden = hideSecret(word);//this will be displayed for the player
 		String before; 
 		
-		Scanner scan = new Scanner(System.in);
 		
 		do {
-		before = hidden.toString(); 
-		System.out.println("You have " + guesses + " remaining guesses");
-		
-		consoleDraw();//showing the player the state of the hangman
-		
-		System.out.println(hidden);//showing the hidden word which reveals more with more correct guesses
-		System.out.println("\nMake a Guess!");//prompting for a guess
-		
-		makeGuess(word, hidden, scan);
-		
-		if(before.equals(hidden.toString())) {
-			System.out.println("You Guessed Incorrectly!");
-			guesses--;
-		}
-		if(hidden.toString().equals(word)) {
-			done = true;
-		}
-		if(guesses == 0) {
-			break;
-		}
+			before = hidden.toString(); 
+			System.out.println("You have " + guesses + " remaining guesses");
+			
+			consoleDraw();//showing the player the state of the hangman
+			
+			System.out.println(hidden);//showing the hidden word which reveals more with more correct guesses
+			System.out.println("\nMake a Guess!");//prompting for a guess
+			
+			makeGuess(word, hidden, scan);
+			
+			if(before.equals(hidden.toString())) {
+				System.out.println("You Guessed Incorrectly!");
+				guesses--;
+			}
+			if(hidden.toString().equals(word)) {
+				done = true;//this marks the game as a win
+			}
+			if(guesses == 0) {
+				break;//the player lost
+			}
 		
 		}while (!done);
 		
@@ -202,8 +241,11 @@ public class Hangman {
 		}else {
 			System.out.println("You ran out of guesses. Better luck next time!");
 		}
+		done = false;
 		
-		System.out.println("The hidden word was \""+word+"\"");		*/
+		intscan.close();
+		scan.close();
+		System.out.println("The hidden word was \""+word+"\"");		
 	}
 
 }
